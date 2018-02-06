@@ -47,14 +47,14 @@ namespace ticket_cask
         private void StartbgTmr()
         {
             bg_tmr = new System.Windows.Forms.Timer();
-            bg_tmr.Interval = 10000;
+            bg_tmr.Interval = 100000;
             bg_tmr.Tick += new EventHandler(bgtmr_Tick);
             bg_tmr.Enabled = true;
         }
 
         void tmr_Tick(object sender, EventArgs e)
         {
-            dashDate.Text = DateTime.Now.ToString("MM/dd/yy\n HH:MM:ss");
+            dashDate.Text = DateTime.Now.ToString("MM/dd/yy\n HH:mm:ss");
         }
 
         void bgtmr_Tick(object sender, EventArgs r)
@@ -62,7 +62,7 @@ namespace ticket_cask
 
             //do the stored procedure call to update data views
             dTicketGrid.ItemsSource = null;
-            SqlCommand command = new SqlCommand("StatsTracker_DashBoardTickets", sql);
+            SqlCommand command = new SqlCommand("StatsTracker_GetTickets", sql);
             SqlDataReader reader = null;
             //List<EmpStatRow> rows = new List<EmpStatRow>();
             //EmpStatRow row = null;
@@ -70,7 +70,7 @@ namespace ticket_cask
             {
                 sql.Open();
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.Add("@date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value;
+                //command.Parameters.Add("@date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value;
                 reader = command.ExecuteReader();
                 List<Ticket> tickets = new List<Ticket>();
                 List<Ticket> ticket_context = new List<Ticket>();
@@ -80,7 +80,7 @@ namespace ticket_cask
 
                 while (reader.Read())
                 {
-                    temp = new Ticket(reader["Status"].ToString(), Convert.ToDateTime(reader["DateRequested"]), (reader["Status"].ToString() == "Closed" ? Convert.ToDateTime(reader["DateCompleted"]) : DateTime.MinValue), ((rDatepicker.SelectedDate.Value - Convert.ToDateTime(reader["DateRequested"].ToString())).Days), reader["Assignee"].ToString(), reader["Title"].ToString(), reader["Priority"].ToString());
+                    temp = new Ticket(reader["Status"].ToString(), Convert.ToDateTime(reader["Date_Requested"]), (reader["Status"].ToString() == "Closed" ? Convert.ToDateTime(reader["Date_Completed"]) : DateTime.MinValue), ((rDatepicker.SelectedDate.Value - Convert.ToDateTime(reader["Date_Requested"].ToString())).Days), reader["Assigned_To_Name"].ToString(), "Temp", reader["Priority"].ToString());
                     tickets.Add(temp);
                 }
                 sql.Close();
@@ -135,7 +135,7 @@ namespace ticket_cask
             //Employee Reports Selected
             else if(cbReport.SelectedIndex == 0)
             {
-                SqlCommand command = new SqlCommand("StatsTracker_EmployeeReport", sql);
+                SqlCommand command = new SqlCommand("StatsTracker_GetTickets", sql);
                 SqlDataReader reader = null;
                 List<EmpStatRow> rows = new List<EmpStatRow>();
                 EmpStatRow row = null;
@@ -143,16 +143,16 @@ namespace ticket_cask
                 {
                     sql.Open();
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.Add("@Date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value.AddDays(-90);
+                    //command.Parameters.Add("@Date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value.AddDays(-90);
                     reader = command.ExecuteReader();
                     
                     while(reader.Read())
                     {
-                        row = new EmpStatRow(reader["AssignedToName"].ToString(), reader["Status"].ToString(), Convert.ToDateTime(reader["DateRequested"]));
+                        row = new EmpStatRow(reader["Assigned_To_Name"].ToString(), reader["Status"].ToString(), Convert.ToDateTime(reader["Date_Requested"]));
                         
                         if(row.status == "Closed")
                         {
-                            row.com_date = Convert.ToDateTime(reader["DateCompleted"]);
+                            row.com_date = Convert.ToDateTime(reader["Date_Completed"]);
                         }
                         else
                         {
@@ -301,7 +301,7 @@ namespace ticket_cask
             else if(cbReport.SelectedIndex == 1)
             {
                 
-                SqlCommand commnd = new SqlCommand("StatsTracker_VelocityReport", sql);
+                SqlCommand commnd = new SqlCommand("StatsTracker_GetTickets", sql);
                 SqlDataReader readr = null;
                 
 
@@ -309,7 +309,7 @@ namespace ticket_cask
                 {
                     sql.Open();
                     commnd.CommandType = System.Data.CommandType.StoredProcedure;
-                    commnd.Parameters.Add("@Date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value.AddDays(-90);
+                    //commnd.Parameters.Add("@Date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value.AddDays(-90);
                     readr = commnd.ExecuteReader();
                     List<Ticket> data = new List<Ticket>();
                     Ticket temp = null;
@@ -318,15 +318,15 @@ namespace ticket_cask
                     {
                         if (readr["Status"].ToString() == "Closed")
                         {
-                            temp = new Ticket(readr["Status"].ToString(), Convert.ToDateTime(readr["DateRequested"]), Convert.ToDateTime(readr["DateCompleted"]));
+                            temp = new Ticket(readr["Status"].ToString(), Convert.ToDateTime(readr["Date_Requested"]), Convert.ToDateTime(readr["Date_Completed"]));
                             temp.Age = (rDatepicker.SelectedDate.Value - temp.Completed).Days;
-                            temp.AssignedName = readr["AssignedToName"].ToString();
+                            temp.AssignedName = readr["Assigned_To_Name"].ToString();
                         }
                         else
                         {
-                            temp = new Ticket(readr["Status"].ToString(), Convert.ToDateTime(readr["DateRequested"]), DateTime.MinValue);
+                            temp = new Ticket(readr["Status"].ToString(), Convert.ToDateTime(readr["Date_Requested"]), DateTime.MinValue);
                             temp.Age = (rDatepicker.SelectedDate.Value - temp.Requested).Days;
-                            temp.AssignedName = readr["AssignedToName"].ToString();
+                            temp.AssignedName = readr["Assigned_To_Name"].ToString();
                         }
                         data.Add(temp);
                     }
@@ -356,85 +356,31 @@ namespace ticket_cask
                         }
                     }
 
-                    int open_c = 0;
-                    int ass_c = 0;
-                    int seven_create = 0;
-                    int thirt_create = 0;
-                    int ninet_create = 0;
-                    int seven_close = 0;
-                    int thirt_close = 0;
-                    int nint_close = 0;
-                    int seven_age = 0;
-                    int eight_age = 0;
-                    int fifteen_age = 0;
-                    int twenty_age = 0;
-                    int thirt_age = 0;
 
-                    foreach (Ticket tick  in data)
-                    {
+                    commnd = new SqlCommand("StatsTracker_Velocity", sql);
+                    readr = null;
+                    commnd.CommandType = System.Data.CommandType.StoredProcedure;
+                    sql.Open();
+                    
+                    //commnd.Parameters.Add("@Date", SqlDbType.DateTime).Value = rDatepicker.SelectedDate.Value.AddDays(-90);
+                    readr = commnd.ExecuteReader();
 
-                        if (tick.Age < 8)
-                        {
-                            seven_create++;
-                        }
-                        if (tick.Age < 31)
-                        {
-                            thirt_create++;
-                        }
-                        if (tick.Age < 91)
-                        {
-                            ninet_create++;
-                        }
-                        
-
-                        if (tick.Status == "Closed" || tick.Status == "Cancelled")
-                        {
-                            if (tick.Age < 8)
-                            {
-                                seven_close++;
-                            }
-                            if (tick.Age < 31)
-                            {
-                                thirt_close++;
-                            }
-                            if (tick.Age < 91)
-                            {
-                                nint_close++;
-                            }
-                        }
-                        else
-                        {
-                            open_c++;
-                            if (tick.Age < 8)
-                            {
-                                seven_age++;
-                            }
-                            else if (tick.Age >= 8 && tick.Age < 15)
-                            {
-                                eight_age++;
-                            }
-                            else if (tick.Age >= 15 && tick.Age < 22)
-                            {
-                                fifteen_age++;
-                            }
-                            else if (tick.Age >= 22 && tick.Age < 31)
-                            {
-                                twenty_age++;
-                            }
-                            else
-                            {
-                                thirt_age++;
-                            }
-
-                            if(tick.AssignedName != "Unassigned")
-                            {
-                                ass_c++;
-                            }
-                        }
-                    }
                     List<AllStatsRow> rws = new List<AllStatsRow>();
-                    AllStatsRow stats = new AllStatsRow(rDatepicker.SelectedDate.Value.ToString("MM-dd-yy"), open_c, ass_c, seven_create, thirt_create, ninet_create, seven_close, thirt_close, nint_close, seven_age, eight_age, fifteen_age, twenty_age, thirt_age);
-                    rws.Add(stats);
+                    AllStatsRow stats;
+
+                    while (readr.Read())
+                    {
+                        stats = new AllStatsRow(Convert.ToDateTime(readr["Report_Date"]).ToString(), Convert.ToInt32(readr["Open_Count"]), 
+                            Convert.ToInt32(readr["Assigned_Count"]), Convert.ToInt32(readr["Seven_Day_Created_Count"]), Convert.ToInt32(readr["Thirty_Day_Created_Count"]),
+                            Convert.ToInt32(readr["Ninety_Day_Created_Count"]), Convert.ToInt32(readr["Seven_Day_Closed_Count"]),
+                            Convert.ToInt32(readr["Thirty_Day_Closed_Count"]), Convert.ToInt32(readr["Ninety_Day_Closed_Count"]),
+                            Convert.ToInt32(readr["Seven_Day_Age"]), Convert.ToInt32(readr["Eight_Day_Age"]), Convert.ToInt32(readr["Fifteen_Day_Age"]),
+                            Convert.ToInt32(readr["Twent_Day_Age"]), Convert.ToInt32(readr["Thirty_Day_Age"]));
+                        rws.Add(stats);
+                    }
+                    sql.Close();
+
+                    
                     rBarGraph.Visibility = Visibility.Visible;
                     rRightPanel.Visibility = Visibility.Visible;
                     rbgGraph.PlotBars(age_data);
