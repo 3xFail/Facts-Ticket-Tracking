@@ -1,0 +1,11 @@
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\StatsReader.exe.config
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\StatsReader.exe
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\StatsReader.pdb
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\ExcelDataReader.DataSet.dll
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\ExcelDataReader.dll
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\ExcelDataReader.xml
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\bin\Debug\ExcelDataReader.DataSet.xml
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\obj\Debug\StatsReader.csprojResolveAssemblyReference.cache
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\obj\Debug\StatsReader.csproj.CoreCompileInputs.cache
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\obj\Debug\StatsReader.exe
+C:\Users\sw.rwilliams\Source\Repos\Facts-Ticket-Tracking\StatsReader\StatsReader\obj\Debug\StatsReader.pdb
