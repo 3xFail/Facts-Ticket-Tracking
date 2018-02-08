@@ -19,13 +19,32 @@ namespace StatsReader
         public static string loc = @"T:\Information Technology Services\Help Desk\fast";
         //public static string loc = @"C:\Users\sw.rwilliams\Desktop\test";
 
-        public static string testloc = @"T:\Information Technology Services\Help Desk\fast\FASTS Service Desk Data Extract_2191_123456010_02-06-2018_07-41-03_AM.xls";
+        //public static string testloc = @"T:\Information Technology Services\Help Desk\fast\FASTS Service Desk Data Extract_2191_123456010_02-08-2018_07-40-28_AM.xls";
         
 
         public static void Main(string[] args)
         {
             watcher = new FileSystemWatcher();
-            Run();
+            // Create a new FileSystemWatcher and set its properties.
+
+            watcher.Path = loc;
+            /* Watch for changes in LastAccess and LastWrite times, and
+               the renaming of files or directories. */
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+
+            // Only watch xlsx files.
+            watcher.Filter = "*";
+
+            // Add event handlers.
+            watcher.Changed += new FileSystemEventHandler(OnCreate);
+
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+
+            // Wait for eternity 
+            new System.Threading.AutoResetEvent(false).WaitOne();
+
+            //Run();
             //test(testloc);
         }
 
@@ -48,9 +67,8 @@ namespace StatsReader
             // Begin watching.
             watcher.EnableRaisingEvents = true;
 
-            // Wait for the user to quit the program.
-            Console.WriteLine("Press \'q\' to quit.");
-            while (Console.Read() != 'q');
+            // Wait for eternity 
+            new System.Threading.AutoResetEvent(false).WaitOne();
         }
 
         // Define the event handlers.
