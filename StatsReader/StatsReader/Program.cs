@@ -18,8 +18,7 @@ namespace StatsReader
         public static FileSystemWatcher watcher;
         public static string loc = @"T:\Information Technology Services\Help Desk\fast";
         //public static string loc = @"C:\Users\sw.rwilliams\Desktop\test";
-
-        //public static string testloc = @"T:\Information Technology Services\Help Desk\fast\FASTS Service Desk Data Extract_2191_123456010_02-08-2018_07-40-28_AM.xls";
+        //public static string testloc = @"T:\Information Technology Services\Help Desk\fast\FASTS Service Desk Data Extract_2191_123456010_02-12-2018_07-37-50_AM.xls";
         
 
         public static void Main(string[] args)
@@ -33,7 +32,7 @@ namespace StatsReader
             watcher.NotifyFilter = NotifyFilters.LastWrite;
 
             // Only watch xlsx files.
-            watcher.Filter = "*";
+            watcher.Filter = "FASTS Service Desk Data Extract_2191_123456010_?.xls";
 
             // Add event handlers.
             watcher.Changed += new FileSystemEventHandler(OnCreate);
@@ -202,7 +201,7 @@ namespace StatsReader
             }
 
 
-
+            //stat = new AllStatsRow( new DateTime(2018, 2, 12).ToString("MM-dd-yy"), open_c, ass_c, seven_create, thirt_create, ninet_create, seven_close, thirt_close, nint_close, seven_age, eight_age, fifteen_age, twenty_age, thirt_age);
             stat = new AllStatsRow(DateTime.Now.ToString("MM-dd-yy"), open_c, ass_c, seven_create, thirt_create, ninet_create, seven_close, thirt_close, nint_close, seven_age, eight_age, fifteen_age, twenty_age, thirt_age);
 
             try
